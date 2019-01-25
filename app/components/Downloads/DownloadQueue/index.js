@@ -43,7 +43,7 @@ const DownloadQueue = props => {
     <table className={styles.download_queue}>
       <thead>
         <tr>
-          <th><FontAwesome name='hashtag'/></th>
+          <th><FontAwesome name='image'/></th>
           <th>Artist</th>
           <th>Title</th>
           <th>Progress</th>

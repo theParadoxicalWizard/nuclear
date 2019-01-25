@@ -5,9 +5,15 @@ import { bindActionCreators } from 'redux';
 import Downloads from '../../components/Downloads';
 
 class DownloadsContainer extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     return (
-      <Downloads />
+      <Downloads
+        queue={this.props.downloads.queue}
+      />
     );
   }
 }
