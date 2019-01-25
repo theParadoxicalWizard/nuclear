@@ -42,11 +42,13 @@ const DownloadQueue = props => {
   return (
     <table className={styles.download_queue}>
       <thead>
-        <th><FontAwesome name='hashtag'/></th>
-        <th>Artist</th>
-        <th>Title</th>
-        <th>Progress</th>
-        <th>Status</th>
+        <tr>
+          <th><FontAwesome name='hashtag'/></th>
+          <th>Artist</th>
+          <th>Title</th>
+          <th>Progress</th>
+          <th>Status</th>
+        </tr>
       </thead>
       <tbody>
         {

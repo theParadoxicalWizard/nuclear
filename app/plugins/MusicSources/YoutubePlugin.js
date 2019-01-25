@@ -12,6 +12,11 @@ class YoutubePlugin extends MusicSourcePlugin {
     this.description = 'A plugin allowing Nuclear to search for music and play it from youtube';
   }
 
+  getThumbnail(videoInfo) {
+    let thumbnail = _.get(videoInfo, 'player_response.videoDetails.thumbnail.thumbnails');
+    return _.find(thumbnail, {width: 246}).url;
+  }
+
   search (terms) {
     return Youtube.trackSearch(terms)
       .then(results => results.json())
@@ -21,8 +26,6 @@ class YoutubePlugin extends MusicSourcePlugin {
         return ytdl.getInfo(`http://www.youtube.com/watch?v=${id}`);
       })
       .then(videoInfo => {
-        let thumbnail = _.get(videoInfo, 'player_response.videoDetails.thumbnail.thumbnails');
-        thumbnail = _.find(thumbnail, {width: 246}).url;
         let formatInfo = _.head(videoInfo.formats.filter(e => e.itag === '140'));
         return {
           source: this.sourceName,
@@ -30,7 +33,7 @@ class YoutubePlugin extends MusicSourcePlugin {
           stream: formatInfo.url,
           duration: videoInfo.length_seconds,
           title: videoInfo.title,
-          thumbnail
+          thumbnail: this.getThumbnail(videoInfo)
         };
       });
   }
@@ -53,7 +56,7 @@ class YoutubePlugin extends MusicSourcePlugin {
           stream: formatInfo.url,
           duration: videoInfo.length_seconds,
           title: videoInfo.title,
-          thumbnail: videoInfo.thumbnail_url
+          thumbnail: this.getThumbnail(videoInfo)
         };
       });
   }
