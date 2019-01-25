@@ -9,14 +9,13 @@ import MainLayout from '../../components/MainLayout';
 import AlbumViewContainer from '../AlbumViewContainer';
 import ArtistViewContainer from '../ArtistViewContainer';
 import DashboardContainer from '../DashboardContainer';
+import DownloadsContainer from '../DownloadsContainer';
 import PlaylistsContainer from '../PlaylistsContainer';
 import PlaylistViewContainer from '../PlaylistViewContainer';
 import PluginsContainer from '../PluginsContainer';
 import SearchResultsContainer from '../SearchResultsContainer';
 import SettingsContainer from '../SettingsContainer';
 import TagViewContainer from '../TagViewContainer';
-
-import Downloads from '../../components/Downloads';
 
 class MainContentContainer extends React.Component {
   componentDidMount() {
@@ -36,7 +35,7 @@ class MainContentContainer extends React.Component {
               <Route path='/album/:albumId' component={AlbumViewContainer} />
               <Route path='/artist/:artistId' component={ArtistViewContainer} />
               <Route path='/dashboard' component={DashboardContainer} />
-              <Route path='/downloads' component={Downloads} />
+              <Route path='/downloads' component={DownloadsContainer} />
               <Route path='/playlists' component={PlaylistsContainer} />
               <Route path='/playlist/:playlistId' component={PlaylistViewContainer} />
               <Route path='/plugins' component={PluginsContainer} />
