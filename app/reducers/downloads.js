@@ -7,12 +7,12 @@ const initialState = {
 };
 
 export default function DownloadsReducer(state=initialState, action) {
-  switch(action.type) {
-    ADD_TO_DOWNLOADS:
+  switch (action.type) {
+  case ADD_TO_DOWNLOADS:
     return Object.assign({}, state, {
-    queue: [...state.queue, action.track]
+      queue: [...state.queue, action.track]
     });
-    default:
+  default:
     return state;
   }
 }

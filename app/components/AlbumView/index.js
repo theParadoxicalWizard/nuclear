@@ -220,6 +220,7 @@ class AlbumView extends React.Component {
       >
         {this.renderAddTrackToQueueButton(album, el)}
         {this.renderPlayTrackButton(album, el)}
+        {this.renderAddToDownloadsButton(album, el)}
       </ContextPopup>
     );
   }
@@ -254,6 +255,27 @@ class AlbumView extends React.Component {
       </a>
     );
   }
+
+  renderAddToDownloadsButton(album, el) {
+    console.log(album);
+
+    return (
+      <a
+        href='#'
+        onClick={() => this.props.addToDownloads({
+          artist: album.artists[0].name,
+          title: el.title,
+          progress: 0,
+          status: 'Paused'
+        })}
+        className={styles.add_button}
+        aria-label='Add this track to downloads'
+      >
+        <FontAwesome name='download' /> Add to downloads
+      </a>
+    );
+  }
+
   renderOptionsButtons (album) {
     return (
       <ContextPopup

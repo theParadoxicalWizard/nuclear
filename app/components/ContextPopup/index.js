@@ -19,7 +19,7 @@ class ContextPopup extends React.Component {
   handleClose() {
     this.setState({ isOpen: false });
   }
-  
+
   render() {
     return (
       <Popup

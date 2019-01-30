@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as DownloadsActions from '../../actions/downloads';
 import * as QueueActions from '../../actions/queue';
 import * as PluginsActions from '../../actions/plugins';
 import * as PlaylistsActions from '../../actions/playlists';
@@ -39,7 +40,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(Object.assign({}, PluginsActions, QueueActions, PlaylistsActions, SettingsActions), dispatch)
+    actions: bindActionCreators(Object.assign({},
+      PluginsActions,
+      QueueActions,
+      PlaylistsActions,
+      SettingsActions,
+      DownloadsActions
+    ), dispatch)
   };
 }
 

@@ -38,7 +38,8 @@ DownloadsItem.defaultProps = {
 };
 
 const DownloadQueue = props => {
-  let { downloads } = props;
+  let { queue } = props;
+  console.log(props);
   return (
     <table className={styles.download_queue}>
       <thead>
@@ -52,7 +53,7 @@ const DownloadQueue = props => {
       </thead>
       <tbody>
         {
-          downloads.map((item, i ) => {
+          queue.map((item, i ) => {
             return <DownloadsItem { ...item } key={i} />;
           })
         }
@@ -62,11 +63,11 @@ const DownloadQueue = props => {
 };
 
 DownloadQueue.propTypes = {
-  downloads: PropTypes.array
+  queue: PropTypes.array
 };
 
 DownloadQueue.defaultProps = {
-  downloads: []
+  queue: []
 };
 
 export default DownloadQueue;

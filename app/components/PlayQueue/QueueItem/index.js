@@ -79,7 +79,8 @@ class QueueItem extends React.Component {
       index,
       defaultMusicSource,
       selectSong,
-      removeFromQueue
+      removeFromQueue,
+      addToDownloads
     } = this.props;
 
     let selectedStream = getSelectedStream(track.streams, defaultMusicSource);

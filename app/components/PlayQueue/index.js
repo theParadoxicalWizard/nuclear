@@ -41,6 +41,7 @@ class PlayQueue extends React.Component {
                     defaultMusicSource={this.props.plugins.defaultMusicSource}
                     selectSong={this.props.actions.selectSong}
                     removeFromQueue={this.props.actions.removeFromQueue}
+                    addToDownloads={this.props.actions.addToDownloads}
                   />
                 }
                 track={el}
