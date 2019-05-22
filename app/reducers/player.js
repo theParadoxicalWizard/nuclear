@@ -1,4 +1,4 @@
-import Sound from 'react-sound';
+import Sound from 'react-hifi';
 
 import {
   START_PLAYBACK,

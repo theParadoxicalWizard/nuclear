@@ -9,35 +9,39 @@ import MainLayout from '../../components/MainLayout';
 import AlbumViewContainer from '../AlbumViewContainer';
 import ArtistViewContainer from '../ArtistViewContainer';
 import DashboardContainer from '../DashboardContainer';
+import FavoritesContainer from '../FavoritesContainer';
+import LyricsContainer from '../LyricsContainer';
 import PlaylistsContainer from '../PlaylistsContainer';
 import PlaylistViewContainer from '../PlaylistViewContainer';
 import PluginsContainer from '../PluginsContainer';
 import SearchResultsContainer from '../SearchResultsContainer';
 import SettingsContainer from '../SettingsContainer';
 import TagViewContainer from '../TagViewContainer';
-import LyricsContainer from '../LyricsContainer';
+import EqualizerViewContainer from '../EqualizerViewContainer';
+import LibraryViewContainer from '../LibraryViewContainer';
 
-import Downloads from '../../components/Downloads';
+import DownloadsContainer from '../../containers/DownloadsContainer';
 
 class MainContentContainer extends React.Component {
   componentDidMount () {
-    if (this.props.history
-      && this.props.location
-      && this.props.location.pathname === '/') {
+    if (this.props.history &&
+      this.props.location &&
+      this.props.location.pathname === '/') {
       this.props.history.push('/dashboard');
     }
   }
 
   render () {
     return (
-      <Route render={({ location, history, match }) => {
+      <Route render={({ location }) => {
         return (
           <MainLayout>
             <Switch key={location.key} location={location}>
               <Route path='/album/:albumId' component={AlbumViewContainer} />
               <Route path='/artist/:artistId' component={ArtistViewContainer} />
               <Route path='/dashboard' component={DashboardContainer} />
-              <Route path='/downloads' component={Downloads} />
+              <Route path='/downloads' component={DownloadsContainer} />
+              <Route path='/favorites/tracks' component={FavoritesContainer} />
               <Route path='/playlists' component={PlaylistsContainer} />
               <Route path='/playlist/:playlistId' component={PlaylistViewContainer} />
               <Route path='/plugins' component={PluginsContainer} />
@@ -45,6 +49,8 @@ class MainContentContainer extends React.Component {
               <Route path='/tag/:tagName' component={TagViewContainer} />
               <Route path='/search' component={SearchResultsContainer} />
               <Route path='/lyrics' component={LyricsContainer} />
+              <Route path='/equalizer' component={EqualizerViewContainer} />
+              <Route path='/library' component={LibraryViewContainer} />
             </Switch>
           </MainLayout>
         );
@@ -54,9 +60,8 @@ class MainContentContainer extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-  };
+function mapStateToProps () {
+  return {};
 }
 
 function mapDispatchToProps (dispatch) {

@@ -54,19 +54,6 @@ class AlbumView extends React.Component {
     this.props.startPlayback();
   }
 
-  render () {
-    let { album } = this.props;
-    if (
-      _.some(_.map([album.images, album.artists, album.genres], _.isEmpty)) &&
-      album.loading !== true
-    ) {
-      return this.renderInvalidData();
-    }
-
-    let albumImage = this.getAlbumImage(album);
-    return this.renderAlbumLoading(album, albumImage);
-  }
-
   renderInvalidData () {
     return (
       <div>
@@ -191,11 +178,6 @@ class AlbumView extends React.Component {
       key={'album-track-row-' + index}
       track={track}
       index={'album-track-' + index}
-      clearQueue={this.props.clearQueue}
-      addToQueue={this.props.addToQueue}
-      startPlayback={this.props.startPlayback}
-      selectSong={this.props.selectSong}
-      musicSources={this.props.musicSources}
       displayTrackNumber
       displayDuration
     />);
@@ -249,6 +231,19 @@ class AlbumView extends React.Component {
         </a>
       </ContextPopup>
     );
+  }
+  
+  render () {
+    let { album } = this.props;
+    if (
+      _.some(_.map([album.images, album.artists, album.genres], _.isEmpty)) &&
+      album.loading !== true
+    ) {
+      return this.renderInvalidData();
+    }
+
+    let albumImage = this.getAlbumImage(album);
+    return this.renderAlbumLoading(album, albumImage);
   }
 }
 

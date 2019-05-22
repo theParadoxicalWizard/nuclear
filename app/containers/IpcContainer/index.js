@@ -7,6 +7,9 @@ import * as PlayerActions from '../../actions/player';
 import * as QueueActions from '../../actions/queue';
 import * as SettingsActions from '../../actions/settings';
 import * as PlaylistActions from '../../actions/playlists';
+import * as EqualizerActions from '../../actions/equalizer';
+import * as DownloadsActions from '../../actions/downloads';
+import * as LocalFileActions from '../../actions/local';
 
 import {
   onNext,
@@ -24,12 +27,17 @@ import {
   onMute,
   onEmptyQueue,
   onCreatePlaylist,
-  onRefreshPlaylists
+  onRefreshPlaylists,
+  onUpdateEqualizer,
+  onSetEqualizer,
+  onLocalFiles,
+  onLocalFilesError
 } from '../../mpris';
 
 class IpcContainer extends React.Component {
   componentDidMount() {
     ipcRenderer.send('started');
+    ipcRenderer.send('refresh-localfolders');
     ipcRenderer.on('next', event => onNext(event, this.props.actions));
     ipcRenderer.on('previous', event => onPrevious(event, this.props.actions));
     ipcRenderer.on('pause', event => onPause(event, this.props.actions));
@@ -45,6 +53,23 @@ class IpcContainer extends React.Component {
     ipcRenderer.on('queue', event => sendQueueItems(event, this.props.queue.queueItems));
     ipcRenderer.on('create-playlist', (event, name) => onCreatePlaylist(event, { name, tracks: this.props.queue.queueItems }, this.props.actions));
     ipcRenderer.on('refresh-playlists', (event) => onRefreshPlaylists(event, this.props.actions));
+    ipcRenderer.on('update-equalizer', (event, data) =>  onUpdateEqualizer(event, this.props.actions, data));
+    ipcRenderer.on('set-equalizer', (event, data) => onSetEqualizer(event, this.props.actions, data));
+    ipcRenderer.on('local-files', (event, data) => onLocalFiles(event, this.props.actions, data));
+    ipcRenderer.on('local-files-error', (event, err) => onLocalFilesError(event, this.props.actions, err));
+
+    ipcRenderer.on('download-started', (event, data) => {
+      this.props.actions.onDownloadStarted(data);
+    });
+    ipcRenderer.on('download-progress', (event, data) => {
+      this.props.actions.onDownloadProgress(data.uuid, data.progress);
+    });
+    ipcRenderer.on('download-finished', (event, data) => {
+      this.props.actions.onDownloadFinished(data);
+    });
+    ipcRenderer.on('download-error', (event, data) => {
+      console.error(data);
+    });
   }
 
   componentWillReceiveProps(nextProps){
@@ -68,7 +93,19 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(Object.assign({}, PlayerActions, QueueActions, SettingsActions, PlaylistActions), dispatch)
+    actions: bindActionCreators(
+      Object.assign(
+        {},
+        PlayerActions,
+        QueueActions,
+        SettingsActions,
+        PlaylistActions,
+        EqualizerActions,
+        DownloadsActions,
+        LocalFileActions
+      ),
+      dispatch
+    )
   };
 }
 

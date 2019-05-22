@@ -1,8 +1,11 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
+import cx from 'classnames';
+
 import TrackRow from '../../TrackRow';
 import artPlaceholder from '../../../../resources/media/art_placeholder.png';
 
+import trackRowStyles from '../../TrackRow/styles.scss';
 import styles from './styles.scss';
 
 class PopularTracks extends React.Component {
@@ -48,8 +51,11 @@ class PopularTracks extends React.Component {
     let { artist, tracks } = this.props;
 
     return (
-      <div className={styles.popular_tracks_container}>
-        <div className={styles.header}>Popular tracks:</div>
+      <div className={cx(
+        styles.popular_tracks_container,
+        trackRowStyles.tracks_container
+      )}>
+        <div className={styles.header}>Popular tracks </div>
         {this.renderAddAllButton(artist, tracks)}
         <table>
           <thead>
@@ -71,11 +77,6 @@ class PopularTracks extends React.Component {
                     track={track}
                     index={'popular-track-' + index}
                     artist={artist}
-                    clearQueue={this.props.clearQueue}
-                    addToQueue={this.props.addToQueue}
-                    startPlayback={this.props.startPlayback}
-                    selectSong={this.props.selectSong}
-                    musicSources={this.props.musicSources}
                     displayCover
                     displayPlayCount
                   />

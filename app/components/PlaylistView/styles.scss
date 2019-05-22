@@ -25,13 +25,41 @@
     display: flex;
     width: 100%;
     flex-flow: column;
+    justify-content: flex-end;
     margin: 0 2rem;
+  }
+
+  .playlist_header_label {
+    font-variant: all-small-caps;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
   
   .playlist_name {
-    margin: 0 1rem 1rem 0;
-    font-size: 32px;
-    line-height: 32px;
+    display: flex;
+    align-items: center;
+    margin: 0 1rem 2rem 0;
+    font-size: 40px;
+    line-height: 40px;
+    font-weight: bold;
+
+    button {
+      margin-left: 1rem;
+      border: 1px solid rgba($white, 0.3);
+
+      &:hover,
+      &:active,
+      &:focus {
+        i {
+          color: rgba($black, 0.9);
+        }
+      }
+    }
+
+    i {
+      color: rgba($white, 0.6);
+    }
   }
 
   .playlist_buttons {
@@ -80,25 +108,31 @@
     }
   }
 
-  .track_thumbnail {
-    width: 3rem;
-    height: 3rem;
+  table {
+    width: 100%;
   }
 
-  .track_info {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-around;
-    align-items: center;
-    margin: 0.75rem;
-  }
+  thead {
+        background: $background2;
 
-  .track_artist {
-    color: rgba($grey, 0.5);
-    margin: 0 1rem;
-  }
-  
-  .track_name {
+        th {
+          padding: 1rem 1rem;
+          text-align: left;
+        }
+      }
 
-  }
+      tbody {
+        tr {
+          transition: $short-duration;
+        }
+
+        tr:hover {
+          background: rgba($background2, 0.25);
+        }
+
+        td {
+          padding: 1rem 1rem;
+          border-bottom: 1px solid $background2;
+        }
+      }
 }

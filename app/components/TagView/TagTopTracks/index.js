@@ -45,7 +45,7 @@ class TagTopTracks extends React.Component {
               </th>
               <th>Artist</th>
               <th>Title</th>
-              <th>Duration</th>
+              <th style={{ textAlign: 'center' }}>Duration</th>
             </tr>
           </thead>
           <tbody>
@@ -55,11 +55,6 @@ class TagTopTracks extends React.Component {
                 track={track}
                 index={'popular-track-' + index}
                 artist={track.artist}
-                clearQueue={this.props.clearQueue}
-                addToQueue={this.props.addToQueue}
-                startPlayback={this.props.startPlayback}
-                selectSong={this.props.selectSong}
-                musicSources={this.props.musicSources}
                 displayCover
                 displayArtist
                 displayDuration

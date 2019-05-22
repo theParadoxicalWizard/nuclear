@@ -1,15 +1,13 @@
 import React from 'react';
 import { Button, Input, Modal } from 'semantic-ui-react';
 
-import styles from './styles.scss';
-
 class InputDialog extends React.Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       isOpen: false,
-      inputString: ''
+      inputString: this.props.initialString
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -47,7 +45,7 @@ class InputDialog extends React.Component {
       onAccept(this.state.inputString);
       this.handleClose();
     };
-
+    
     return (
       <Modal
         basic
@@ -68,7 +66,8 @@ class InputDialog extends React.Component {
             }}
             placeholder={placeholder}
             onChange={this.handleChange}
-	     />
+            value={this.state.inputString}
+	        />
         </Modal.Content>
         <Modal.Actions>
           <Button onClick={this.handleClose} basic color='red' inverted>

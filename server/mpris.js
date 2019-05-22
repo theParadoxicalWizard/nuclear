@@ -5,11 +5,10 @@ let rendererWindow = null;
 
 // const events = ['raise', 'quit', 'next', 'previous', 'pause', 'playpause', 'stop', 'play', 'seek', 'position', 'open', 'volume', 'settings'];
 
-ipcMain.on('started', event => {
+ipcMain.once('started', event => {
   logger.log('Renderer process started and registered.');
   rendererWindow = event.sender;
 });
-
 
 function onNext() {
   rendererWindow.send('next');
@@ -42,7 +41,7 @@ function onVolume(volume) {
 function onSeek(position) {
   rendererWindow.send('seek', position);
 }
-
+ 
 function onSettings(settings) {
   rendererWindow.send('settings', settings);
 }
@@ -61,6 +60,14 @@ function onCreatePlaylist(name) {
 
 function onRemovePlaylist() {
   rendererWindow.send('refresh-playlists');
+}
+
+function onUpdateEqualizer(data) {
+  rendererWindow.send('update-equalizer', data);
+}
+
+function onSetEqualizer(equalizer) {
+  rendererWindow.send('set-equalizer', equalizer);
 }
 
 function getQueue() {
@@ -96,5 +103,7 @@ module.exports = {
   getQueue,
   onCreatePlaylist,
   onRemovePlaylist,
-  getPlayingStatus
+  getPlayingStatus,
+  onUpdateEqualizer,
+  onSetEqualizer
 };

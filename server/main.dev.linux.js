@@ -1,12 +1,17 @@
+import 'babel-polyfill';
 import logger from 'electron-timber';
+import platform from 'electron-platform';
+import path from 'path';
+import url from 'url';
+import { app, ipcMain, nativeImage, BrowserWindow, Menu, Tray } from 'electron';
+
+import { runHttpServer, closeHttpServer } from './http/server';
 import { setOption } from './store';
-// const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer');
-const { app, ipcMain, nativeImage, BrowserWindow, Menu, Tray } = require('electron');
-const platform = require('electron-platform');
-const path = require('path');
-const url = require('url');
+import { registerDownloadsEvents } from './downloads';
+
+const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 const getOption = require('./store').getOption;
-const { runHttpServer, closeHttpServer } = require('./http/server');
+
 
 // GNU/Linux-specific
 if (!platform.isDarwin && !platform.isWin32) {
@@ -41,15 +46,13 @@ function createWindow() {
 
   win.setTitle('nuclear music player');
 
-  // Needs to be commented for now
-  // https://github.com/electron/electron/issues/13008
-  // installExtension(REACT_DEVELOPER_TOOLS)
-  // .then((name) => console.log(`Added Extension:  ${name}`))
-  // .catch((err) => console.log('An error occurred: ', err));
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 
-  // installExtension(REDUX_DEVTOOLS)
-  // .then((name) => console.log(`Added Extension:  ${name}`))
-  // .catch((err) => console.log('An error occurred: ', err));
+  installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 
   win.loadURL(url.format({
     pathname: 'localhost:8080',
@@ -86,6 +89,8 @@ function createWindow() {
   tray.setTitle('nuclear music player');
   tray.setToolTip('nuclear music player');
   tray.setContextMenu(trayMenu);
+
+  registerDownloadsEvents(win);
 
   ipcMain.on('close', () => {
     logger.log('Received a close message from ipc, quitting');

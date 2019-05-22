@@ -1,12 +1,18 @@
 import React from 'react';
-import FontAwesome from 'react-fontawesome';
-import { Button, Input, Radio } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+import { Button, Input, Radio, Segment } from 'semantic-ui-react';
 import Range from 'react-range-progress';
 import cx from 'classnames';
 import _ from 'lodash';
+import {
+  Divider,
+  Icon
+} from 'semantic-ui-react';
 
 import Header from '../Header';
 import Spacer from '../Spacer';
+import SocialIntegration from './SocialIntegration';
+import GithubSettings from './GithubSettings';
 import settingsEnum from '../../constants/settingsEnum';
 
 import styles from './styles.scss';
@@ -41,23 +47,24 @@ class Settings extends React.Component {
     return _.isNull(value) || !_.isNaN(intValue);
   }
 
-  renderLastFmTitle () {
+  renderLastFmSocialIntegration () {
     return (
-      <div className={styles.settings_item}>
-        <label>
-          <span className={styles.settings_logo}>
-            <span className='fa-stack fa-lg'>
-              <FontAwesome name='square' stack='1x' />
-              <FontAwesome
-                name='lastfm-square'
-                stack='1x'
-                className={styles.lastfm_icon}
-              />
-            </span>
-          </span>
-          <span>Last.fm integration</span>
-        </label>
-      </div>
+      <SocialIntegration
+        logo={
+          <Icon.Group size='big'>
+            <Icon name='square' className={ styles.social_icon_bg }/>
+            <Icon name='lastfm square' className={ styles.lastfm_icon }/>
+          </Icon.Group>
+        }
+        title='Last.fm'
+        description={
+          'In order to enable scrobbling, you first have to'
+                + ' connect and authorize Nuclear on Last.fm, then click log in.'
+        }
+      >
+        {this.renderLastFmLoginButtons()}
+        {this.renderLastFmOptionRadio()}
+      </SocialIntegration>
     );
   }
 
@@ -67,9 +74,14 @@ class Settings extends React.Component {
       lastFmName,
       lastFmSessionKey
     } = this.props.scrobbling;
-    const { lastFmConnectAction, lastFmLoginAction } = this.props.actions;
+    
+    const {
+      lastFmConnectAction,
+      lastFmLoginAction,
+      lastFmLogOut
+    } = this.props.actions;
     return (
-      <div className={styles.settings_item}>
+      <div className={styles.settings_social_item}>
         <span>
           User: <strong>{lastFmName ? lastFmName : 'Not logged in'}</strong>
         </span>
@@ -87,16 +99,22 @@ class Settings extends React.Component {
             Log in
           </Button>
         )}
+        {
+          lastFmSessionKey &&
+            <Button onClick={ lastFmLogOut } inverted>
+              Log out
+            </Button>
+        }
       </div>
     );
   }
 
-  renderLastFmOptionRadio () {
+  renderLastFmOptionRadio() {
     let { lastFmScrobblingEnabled } = this.props.scrobbling;
     const { enableScrobbling, disableScrobbling } = this.props.actions;
     return (
       <div className={styles.settings_item}>
-        <label>Enable scrobbling to last.fm</label>
+        <label>Enable scrobbling to Last.fm</label>
         <Spacer />
         <Radio
           toggle
@@ -113,22 +131,45 @@ class Settings extends React.Component {
     );
   }
 
+  renderGithubSocialIntegration() {
+    const {
+      actions,
+      github
+    } = this.props;
+    
+    return (
+      <SocialIntegration
+        logo={
+          <Icon.Group size='big'>
+            <Icon name='square' className={ styles.social_icon_bg } />
+            <Icon color='black' name='github square' />
+          </Icon.Group>
+        }
+        title='Github'
+        description={
+          'Log in via Github to be able to create and share your playlists online (upcoming feature).'
+        }
+      >
+        <GithubSettings
+          logIn={ actions.githubOauth }
+          logOut={ actions.githubLogOut }
+          loading={ _.get(github, 'loading') }
+          username={ _.get(github, 'login') }
+        />
+      </SocialIntegration>
+    );
+  }
+
   renderSocialSettings () {
     return (
       <div className={styles.settings_section}>
         <Header>Social</Header>
         <hr />
-        {this.renderLastFmTitle()}
-
-        <div className={styles.settings_item}>
-          <p>
-            In order to enable scrobbling, you first have to connect and
-            authorize nuclear on Last.fm, then click log in.
-          </p>
-        </div>
-
-        {this.renderLastFmLoginButtons()}
-        {this.renderLastFmOptionRadio()}
+        <Segment>
+          { this.renderLastFmSocialIntegration() }
+          <Divider />
+          { this.renderGithubSocialIntegration() }
+        </Segment>
       </div>
     );
   }
@@ -156,21 +197,27 @@ class Settings extends React.Component {
   }
 
   renderSliderOption (option) {
-    return (<div className={styles.slider_container}>
-      Value : {this.getOptionValue(option) || option.default} {option.unit}
-      <Range
-        value={this.getOptionValue(option) || option.default}
-        min={option.min}
-        max={option.max}
-        fillColor={volumeSliderColors.fillColor}
-        trackColor={volumeSliderColors.trackColor}
-        thumbColor={volumeSliderColors.thumbColor}
-        height={4}
-        width='100%'
-        onChange={(e) => this.handleSliderChange(e, option)}
-      />
-    </div>);
+    // Value : {this.getOptionValue(option) || option.default} {option.unit}
+    return (
+      <div className={styles.slider_container}>
+        <label>Less</label>  
+        <Range
+          value={this.getOptionValue(option) || option.default}
+          min={option.min}
+          max={option.max}
+          fillColor={volumeSliderColors.fillColor}
+          trackColor={volumeSliderColors.trackColor}
+          thumbColor={volumeSliderColors.thumbColor}
+          height={4}
+          width='auto'
+          onChange={(e) => this.handleSliderChange(e, option)}
+          thumbSize={21}
+        />
+        <label>More</label>
+      </div>
+    );
   }
+  
   renderNumberOption (option) {
     if (typeof option.unit === 'string') {
       return this.renderSliderOption(option);
@@ -223,9 +270,11 @@ class Settings extends React.Component {
             <div key={i} className={styles.settings_section}>
               <Header>{i}</Header>
               <hr />
-              {_.map(group, (option, j) =>
-                this.renderOption(settings, option, j)
-              )}
+              <Segment>
+                {_.map(group, (option, j) =>
+                  this.renderOption(settings, option, j)
+                )}
+              </Segment>
             </div>
           );
         })}
@@ -233,5 +282,21 @@ class Settings extends React.Component {
     );
   }
 }
+
+Settings.propTypes = {
+  actions: PropTypes.object,
+  github: PropTypes.object,
+  scrobbling: PropTypes.object,
+  settings: PropTypes.object,
+  options: PropTypes.array
+};
+
+Settings.defaultProps = {
+  actions: {},
+  github: {},
+  scrobbling: {},
+  settings: {},
+  options: []
+};
 
 export default Settings;

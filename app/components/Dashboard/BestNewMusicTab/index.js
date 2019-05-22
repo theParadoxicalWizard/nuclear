@@ -41,8 +41,13 @@ class BestNewMusicTab extends React.Component {
     let {
       dashboardData,
       artistInfoSearchByName,
-      history,
-      albumInfoSearchByName
+      albumInfoSearchByName,
+      addToQueue,
+      selectSong,
+      clearQueue,
+      startPlayback,
+      musicSources,
+      history
     } = this.props;
     
     return (
@@ -58,6 +63,14 @@ class BestNewMusicTab extends React.Component {
         />
         <BestNewMusicContent
           item={ this.state.activeItem }
+          artistInfoSearchByName={artistInfoSearchByName}
+          albumInfoSearchByName={albumInfoSearchByName}
+          addToQueue={addToQueue}
+          selectSong={selectSong}
+          clearQueue={clearQueue}
+          startPlayback={startPlayback}
+          musicSources={musicSources}
+          history={history}
         />
       </Tab.Pane>
     );      

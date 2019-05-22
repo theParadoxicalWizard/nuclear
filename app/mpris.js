@@ -70,6 +70,22 @@ export function onRefreshPlaylists(event, actions) {
   actions.loadPlaylists();
 }
 
+export function onSetEqualizer(event, actions, equalizer) {
+  actions.setEqualizer(equalizer);
+}
+
+export function onUpdateEqualizer(event, actions, data) {
+  actions.updateEqualizer(data);
+}
+
+export function onLocalFiles(event, actions, data) {
+  actions.scanLocalFoldersSuccess(data);
+}
+
+export function onLocalFilesError(event, actions, data) {
+  actions.scanLocalFoldersFailed(data);
+}
+
 export function onSongChange(song) {
   ipcRenderer.send('songChange', song);
 }
@@ -100,6 +116,10 @@ export function restartApi() {
 
 export function stopApi() {
   ipcRenderer.send('stop-api');
+}
+
+export function refreshLocalFolders() {
+  ipcRenderer.send('refresh-localfolders');
 }
 
 export function sendPlayingStatus(event, playerState, queueState) {

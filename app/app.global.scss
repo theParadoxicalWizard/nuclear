@@ -1,4 +1,4 @@
-@import 'vars';
+@import './vars.scss';
 
 html {
   position: absolute;
@@ -87,7 +87,8 @@ a.disabled {
       color: $white;
     }
 
-    font-variant: small-caps;
+    font-variant: all-small-caps;
+    font-size: 20px;
   }
 
   .active.item {
@@ -129,6 +130,20 @@ a.disabled {
 
 .ui.button {
   transition: $short-duration;
+}
+
+.ui.primary.button {
+  background-color: $blue;
+
+  &:hover,
+  &:focus {
+    background-color: darken($blue, 10%);
+  }
+
+  
+  &:active {
+    background-color: darken($blue, 20%);
+  }
 }
 
 .ui.inverted.green.button {
@@ -179,6 +194,24 @@ a.disabled {
 .ui.red.button:focus,
 .ui.red.button:active {
   background-color: $red;
+}
+
+.ui.dropdown {
+  .menu {
+    background: $background3;
+    border: 1px solid rgba($background2, 0.6);
+    box-shadow: 0rem 0.125rem 0.5rem 0.25rem rgba($black, 0.1);
+
+    .header,
+    .item,
+    .item:hover {
+      color: $white;
+    }
+
+    .item:hover {
+      background: $background2;
+    }
+  }
 }
 
 hr {

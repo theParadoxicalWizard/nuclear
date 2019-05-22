@@ -5,3 +5,31 @@
 @mixin roundCorners {
   border-radius: 0.25rem;
 }
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin emptyState {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  
+  height: 100%;
+
+  .fa, .icon {
+    font-size: 72px;
+  }
+  
+  h2 {
+    font-size: 48px;
+    font-weight: normal;
+  }
+
+  div {
+    font-size: 20px;
+  }
+}

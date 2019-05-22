@@ -74,10 +74,6 @@ class SearchResults extends React.Component {
               ? this.props.unifiedSearchStarted
                 ? null
                 : <TracksResults
-                  clearQueue={this.props.clearQueue}
-                  addToQueue={this.props.addToQueue}
-                  startPlayback={this.props.startPlayback}
-                  selectSong={this.props.selectSong}
                   tracks={collection}
                   limit='15'
                 />
@@ -88,7 +84,7 @@ class SearchResults extends React.Component {
     } else {
       return (
         <Tab.Pane loading={this.props.unifiedSearchStarted} attached={false}>
-          <div className={styles.pane_container}>No result</div>
+          <div className={styles.pane_container}>Nothing found.</div>
         </Tab.Pane>
       );
     }
@@ -96,15 +92,19 @@ class SearchResults extends React.Component {
 
 
   renderPlaylistPane () {
-    return (<PlaylistResults
-      playlistSearchStarted={this.props.playlistSearchStarted}
-      playlistSearchResults={this.props.playlistSearchResults}
-      addToQueue={this.props.addToQueue}
-      clearQueue={this.props.clearQueue}
-      startPlayback={this.props.startPlayback}
-      selectSong={this.props.selectSong}
-      musicSources={this.props.musicSources}
-    />);
+    return (
+      <Tab.Pane attached={false}>
+        <PlaylistResults
+          playlistSearchStarted={this.props.playlistSearchStarted}
+          playlistSearchResults={this.props.playlistSearchResults}
+          addToQueue={this.props.addToQueue}
+          clearQueue={this.props.clearQueue}
+          startPlayback={this.props.startPlayback}
+          selectSong={this.props.selectSong}
+          musicSources={this.props.musicSources}
+        />
+      </Tab.Pane>
+    );
   }
 
   panes () {

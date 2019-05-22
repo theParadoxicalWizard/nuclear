@@ -1,13 +1,15 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
-import Sound from 'react-sound';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NavLink, withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import _ from 'lodash';
+import Sound from 'react-hifi';
+
 import * as Actions from './actions';
 import * as PlayerActions from './actions/player';
+import * as PlaylistsActions from './actions/playlists';
 import * as PluginsActions from './actions/plugins';
 import * as QueueActions from './actions/queue';
 import * as SettingsActions from './actions/settings';
@@ -24,8 +26,9 @@ import artPlaceholder from '../resources/media/art_placeholder.png';
 import { config as PluginConfig } from './plugins/config';
 import settingsConst from './constants/settings';
 
-import ExpandingMenuNavLink from './components/ExpandingMenuNavLink';
+import PlaylistsSubMenu from './components/PlaylistsSubMenu';
 import Footer from './components/Footer';
+import HelpModal from './components/HelpModal';
 import Navbar from './components/Navbar';
 import VerticalPanel from './components/VerticalPanel';
 import Spacer from './components/Spacer';
@@ -46,11 +49,20 @@ import PlayerControls from './components/PlayerControls';
 import Seekbar from './components/Seekbar';
 import SidebarMenu from './components/SidebarMenu';
 import SidebarMenuItem from './components/SidebarMenu/SidebarMenuItem';
+import SidebarMenuCategoryHeader from './components/SidebarMenu/SidebarMenuCategoryHeader';
 import TrackInfo from './components/TrackInfo';
 import WindowControls from './components/WindowControls';
 import VolumeControls from './components/VolumeControls';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.actions.loadPlaylists();
+  }
+  
   togglePlayback () {
     if (
       this.props.player.playbackStatus === Sound.status.PAUSED &&
@@ -96,8 +108,12 @@ class App extends React.Component {
           historyCurrentIndex={this.props.history.index}
         />
         <SearchBoxContainer />
-        <Spacer />
-        <Spacer />
+        <Spacer style={{
+          height: '100%',
+          flex: '1 1 45%',
+          WebkitAppRegion: 'drag'
+        }}/>
+        <HelpModal />
         {this.props.settings.framelessWindow && <WindowControls />}
       </Navbar>
     );
@@ -114,6 +130,7 @@ class App extends React.Component {
       </VerticalPanel>
     );
   }
+  
   renderSidebarMenu (settings, toggleOption) {
     return (
       <VerticalPanel
@@ -131,16 +148,34 @@ class App extends React.Component {
               {settings.compactMenuBar ? '0.4.5' : 'Version 0.4.5'}
             </div>
           </div>
+          <SidebarMenuCategoryHeader compact={ settings.compactMenuBar }>
+            Main
+          </SidebarMenuCategoryHeader>
           {this.renderNavLink('dashboard', 'dashboard', 'Dashboard', settings)}
           {this.renderNavLink('downloads', 'download', 'Downloads', settings)}
           {this.renderNavLink('lyrics', 'microphone', 'Lyrics', settings)}
           {this.renderNavLink('plugins', 'flask', 'Plugins', settings)}
           {this.renderNavLink('search', 'search', 'Search Results', settings)}
           {this.renderNavLink('settings', 'cogs', 'Settings', settings)}
-          <ExpandingMenuNavLink>
-            {this.renderNavLink('playlists', 'music', 'Playlists', settings)}
-            {this.renderNavLink('favorites', 'star', 'Favorites', settings)}
-          </ExpandingMenuNavLink>
+          {this.renderNavLink('equalizer', 'sliders', 'Equalizer', settings)}
+
+          <SidebarMenuCategoryHeader compact={ settings.compactMenuBar }>
+            Collection
+          </SidebarMenuCategoryHeader>
+          {this.renderNavLink('favorites/tracks', 'star', 'Favorite tracks', settings)}
+          {this.renderNavLink('library', 'file-sound-o', 'Library', settings)}
+
+          {
+            !_.isEmpty(this.props.playlists) &&
+            <SidebarMenuCategoryHeader compact={ settings.compactMenuBar }>
+            Playlists
+            </SidebarMenuCategoryHeader>
+          }
+          <PlaylistsSubMenu
+            playlists={this.props.playlists}
+            compact={ settings.compactMenuBar }
+          />
+          
           <Spacer />
           {this.renderSidebarFooter(settings, toggleOption)}
         </SidebarMenu>
@@ -257,17 +292,6 @@ class App extends React.Component {
     );
   }
 
-  renderNavbar () {
-    return (
-      <Navbar className={styles.navbar}>
-        <SearchBoxContainer />
-        <Spacer />
-        <Spacer />
-        <WindowControls />
-      </Navbar>
-    );
-  }
-
   componentWillMount () {
     this.props.actions.readSettings();
     this.props.actions.lastFmReadSettings();
@@ -305,6 +329,7 @@ function mapStateToProps (state) {
   return {
     queue: state.queue,
     player: state.player,
+    playlists: state.playlists.playlists,
     scrobbling: state.scrobbling,
     settings: state.settings
   };
@@ -319,6 +344,7 @@ function mapDispatchToProps (dispatch) {
         SettingsActions,
         QueueActions,
         PlayerActions,
+        PlaylistsActions,
         PluginsActions,
         Actions
       ),

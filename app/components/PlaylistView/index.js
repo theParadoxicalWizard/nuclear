@@ -1,17 +1,17 @@
 import React from 'react';
-import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
+import {
+  Button,
+  Icon
+} from 'semantic-ui-react';
 
+import InputDialog from '../InputDialog';
 import ContextPopup from '../ContextPopup';
+import PopupButton from '../ContextPopup/PopupButton';
 import TrackRow from '../TrackRow';
-
-import Spacer from '../Spacer';
 import artPlaceholder from '../../../resources/media/art_placeholder.png';
 
 import styles from './styles.scss';
-
-import { withRouter } from 'react-router-dom'
-
 
 class PlaylistView extends React.Component {
   constructor(props) {
@@ -30,13 +30,20 @@ class PlaylistView extends React.Component {
     startPlayback();
   }
 
-  deletePlaylist(
-    playlist,
-    deletePlaylist,
-    history
-  ){
-    deletePlaylist(playlist.name);
+  deletePlaylist(playlist) {
+    const {
+      history,
+      deletePlaylist
+    } = this.props;
+    
+    deletePlaylist(playlist.id);
     history.push('/playlists');
+  }
+
+  renamePlaylist(playlist, name) {
+    const updatedPlaylist = _.cloneDeep(playlist);
+    updatedPlaylist.name = name;
+    this.props.updatePlaylist(updatedPlaylist);
   }
 
   renderOptions (trigger, playlist) {
@@ -47,19 +54,27 @@ class PlaylistView extends React.Component {
         title={playlist.name}
         thumb={_.get(playlist, 'tracks[0].thumbnail', artPlaceholder)}
       >
-        <div />
+        <PopupButton
+          onClick={() =>
+            this.deletePlaylist(this.props.playlist)
+          }
+          ariaLabel='Delete this playlist'
+          icon='trash'
+          label='Delete this playlist'
+        />           
       </ContextPopup>
     );
   }
 
   renderPlayButton () {
-    let {
+    const {
       playlist,
       addTracks,
       musicSources,
       selectSong,
       startPlayback
     } = this.props;
+    
     return (
       <a
         href='#'
@@ -74,33 +89,8 @@ class PlaylistView extends React.Component {
           )
         }
       >
-        <FontAwesome name='play' /> Play
+        <Icon name='play' /> Play
       </a>
-    );
-  }
-
-  renderDeleteButton () {
-    let {
-      playlist,
-      deletePlaylist
-    } = this.props;
-    const Button = withRouter(({ history }) => (
-      <a
-        href='#'
-        className={styles.delete_button}
-        onClick={() =>
-          this.deletePlaylist(
-            playlist,
-            deletePlaylist,
-            history
-          )
-        }
-      >
-        <FontAwesome name='trash-o' /> Delete
-      </a>
-    ));
-    return (
-      <Button/>
     );
   }
 
@@ -108,9 +98,10 @@ class PlaylistView extends React.Component {
     let { playlist } = this.props;
     let popupTrigger = (
       <a href='#' className={styles.more_button}>
-        <FontAwesome name='ellipsis-h' />
+        <Icon name='ellipsis horizontal' />
       </a>
     );
+    
     return (
       <div className={styles.playlist_info}>
         <div>
@@ -120,12 +111,29 @@ class PlaylistView extends React.Component {
           />
         </div>
         <div className={styles.playlist_header}>
-          <div className={styles.playlist_name}>{playlist.name}</div>
-          <Spacer />
+          <label className={styles.playlist_header_label}>Playlist</label>
+          <div className={styles.playlist_name}>
+            { playlist.name }
+            <InputDialog
+              header={<h4>Input new playlist name:</h4>}
+              placeholder='Playlist name...'
+              accept='Rename'
+              initialString={ playlist.name }
+              onAccept={
+                name => this.renamePlaylist(playlist, name)
+              }
+              trigger={
+                <Button
+                  basic
+                  aria-label='Rename this playlist'
+                  icon='pencil'
+                />
+              }
+            />
+          </div>
           <div className={styles.playlist_buttons}>
-            {this.renderPlayButton()}
-            {this.renderDeleteButton()}
-            {this.renderOptions(popupTrigger, playlist)}
+            { this.renderPlayButton() }
+            { this.renderOptions(popupTrigger, playlist) }
           </div>
         </div>
       </div>
@@ -137,7 +145,7 @@ class PlaylistView extends React.Component {
       <thead>
         <tr>
           <th>
-            <FontAwesome name='photo' />
+            <Icon name='image' />
           </th>
           <th>Artist</th>
           <th>Title</th>
@@ -149,15 +157,11 @@ class PlaylistView extends React.Component {
     const newTrack = _.cloneDeep(track);
     _.set(newTrack, 'artist.name', newTrack.artist);
     _.set(newTrack, 'image[0][\'#text\']', newTrack.thumbnail);
+    
     return (< TrackRow
       key={'playlist-track-row-' + index}
       track={newTrack}
       index={'playlist-track-' + index}
-      clearQueue={this.props.clearQueue}
-      addToQueue={this.props.addToQueue}
-      startPlayback={this.props.startPlayback}
-      selectSong={this.props.selectSong}
-      musicSources={this.props.musicSources}
       displayCover
       displayArtist
     />
@@ -165,7 +169,7 @@ class PlaylistView extends React.Component {
   }
 
   render () {
-    let { playlist } = this.props;
+    const { playlist } = this.props;
     return (
       <div className={styles.playlist_view_container}>
         <div className={styles.playlist}>
